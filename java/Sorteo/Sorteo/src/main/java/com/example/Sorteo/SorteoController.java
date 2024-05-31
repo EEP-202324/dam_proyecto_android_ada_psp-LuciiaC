@@ -13,7 +13,7 @@ import java.security.Principal;
 import java.util.List;
 
 @RestController
-@RequestMapping("/sorteo")//??
+@RequestMapping("/Sorteo")//??
 class SorteoController {
     private final SorteoRepository sorteoRepository;
 
@@ -36,7 +36,7 @@ class SorteoController {
         Sorteo sorteoWithOwner = new Sorteo(null, newSorteoRequest.amount(), principal.getName());
         Sorteo savedSorteo = sorteoRepository.save(sorteoWithOwner);
         URI locationOfNewSorteo = ucb
-                .path("cashcards/{id}")//??
+                .path("Sorteo/{id}")//??
                 .buildAndExpand(savedSorteo.id())
                 .toUri();
         return ResponseEntity.created(locationOfNewSorteo).build();
