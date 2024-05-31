@@ -1,82 +1,65 @@
 package com.example.Sorteo;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.UriComponentsBuilder;
 
-import java.net.URI;
-import java.security.Principal;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
-@RequestMapping("/Sorteo")//??
-class SorteoController {
-    private final SorteoRepository sorteoRepository;
+@RequestMapping("/api/sorteo")
+public class SorteoController {
 
-    private SorteoController(SorteoRepository sorteoRepository) {
-        this.sorteoRepository = sorteoRepository;
+    @Autowired
+    private ParticipanteService participanteService;
+
+    // GET para obtener todos los participantes
+    @GetMapping
+    public List<Participante> getAllParticipantes() {
+        return participanteService.findAll();
     }
 
-    @GetMapping("/{requestedId}")
-    private ResponseEntity<Sorteo> findById(@PathVariable Long requestedId, Principal principal) {
-        Sorteo sorteo = findSorteo(requestedId, principal);
-        if (sorteo != null) {
-            return ResponseEntity.ok(sorteo);
+    // GET para obtener un participante por ID
+    @GetMapping("/{id}")
+    public ResponseEntity<Participante> getParticipanteById(@PathVariable int id) {
+        Optional<Participante> participante = participanteService.findById(id);
+        return participante.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    // POST para crear un nuevo participante
+    @PostMapping
+    public Participante createParticipante(@RequestBody Participante participante) {
+        return participanteService.save(participante);
+    }
+
+    // PUT para actualizar un participante existente
+    @PutMapping("/{id}")
+    public ResponseEntity<Participante> updateParticipante(@PathVariable int id, @RequestBody Participante participanteDetails) {
+        Optional<Participante> participante = participanteService.findById(id);
+        if (participante.isPresent()) {
+            Participante updatedParticipante = participante.get();
+            updatedParticipante.setDni(participanteDetails.getDni());
+            updatedParticipante.setNombre(participanteDetails.getNombre());
+            updatedParticipante.setNumeroTelefono(participanteDetails.getNumeroTelefono());
+            updatedParticipante.setItemComprado(participanteDetails.getItemComprado());
+            return ResponseEntity.ok(participanteService.save(updatedParticipante));
         } else {
             return ResponseEntity.notFound().build();
         }
     }
 
-    @PostMapping
-    private ResponseEntity<Void> createSorteo(@RequestBody Sorteo newSorteoRequest, UriComponentsBuilder ucb, Principal principal) {
-        Sorteo sorteoWithOwner = new Sorteo(null, newSorteoRequest.amount(), principal.getName());
-        Sorteo savedSorteo = sorteoRepository.save(sorteoWithOwner);
-        URI locationOfNewSorteo = ucb
-                .path("Sorteo/{id}")//??
-                .buildAndExpand(savedSorteo.id())
-                .toUri();
-        return ResponseEntity.created(locationOfNewSorteo).build();
-    }
-
-    @GetMapping
-    private ResponseEntity<List<Sorteo>> findAll(Pageable pageable, Principal principal) {
-        Page<Sorteo> page = sorteoRepository.findByOwner(principal.getName(),
-                PageRequest.of(
-                        pageable.getPageNumber(),
-                        pageable.getPageSize(),
-                        pageable.getSortOr(Sort.by(Sort.Direction.ASC, "amount"))
-                ));
-        return ResponseEntity.ok(page.getContent());
-    }
-
-    @PutMapping("/{requestedId}")
-    private ResponseEntity<Void> putSorteo(@PathVariable Long requestedId, @RequestBody Sorteo sorteoUpdate, Principal principal) {
-        Sorteo sorteo = findSorteo(requestedId, principal);
-        if (sorteo != null) {
-            Sorteo updatedSorteo = new Sorteo(requestedId, sorteoUpdate.amount(), principal.getName());
-            sorteoRepository.save(updatedSorteo);
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.notFound().build();
-    }
-
-    private Sorteo findSorteo(Long requestedId, Principal principal) {
-        return sorteoRepository.findByIdAndOwner(requestedId, principal.getName());
-    }
+    // DELETE para eliminar un participante por ID
     @DeleteMapping("/{id}")
-    private ResponseEntity<Void> deleteSorteo(
-        @PathVariable Long id,
-        Principal principal // Add Principal to the parameter list
-    ) {
-    	if (sorteoRepository.existsByIdAndOwner(id, principal.getName())) {
-    	    sorteoRepository.deleteById(id);
-    	    return ResponseEntity.noContent().build();
-    	}
-    	return ResponseEntity.notFound().build();
+    public ResponseEntity<Void> deleteParticipante(@PathVariable int id) {
+        if (participanteService.findById(id).isPresent()) {
+            participanteService.deleteById(id);
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }
-}
+
 

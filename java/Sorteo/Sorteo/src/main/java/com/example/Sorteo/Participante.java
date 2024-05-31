@@ -1,12 +1,10 @@
 package com.example.Sorteo;
 
-
-import org.springframework.data.annotation.Id;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
@@ -18,17 +16,14 @@ public class Participante {
     private int id;
     
     private String dni;
-
     private String nombre;
-    
     private String numeroTelefono;
-    
+
     @Column(nullable = false)
     private String itemComprado;
 
     // Constructor
-    public Participante() {
-    }
+    public Participante() {}
 
     public Participante(int id, String dni, String nombre, String numeroTelefono, String itemComprado) {
         this.id = id;
