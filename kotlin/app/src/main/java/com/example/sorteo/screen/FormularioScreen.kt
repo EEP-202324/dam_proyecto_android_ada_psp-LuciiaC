@@ -4,10 +4,15 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
+import com.example.sorteo.viewModel.ParticipanteViewModel
 
 @Composable
-fun HomeScreen() {
+fun FormularioScreen() {
+    participanteViewModel: ParticipanteViewModel,
+    onShowAllClicked: () -> Unit,
+    onAddClicked: (String, String, String, String) -> Unit // Pasar los campos como parámetros
+
+
     Column {
         // Formulario para crear participante
         // Aquí se incluyen campos para meter el DNI, nombre, etc.
