@@ -39,7 +39,7 @@ class ParticipanteViewModel: ViewModel() {
         }
 
     }
-    fun formularParticipar (formularioParticipar: FormularioParticipantar){
+    fun formularParticipar (formularioParticipar: FormularioParticipar){
         viewModelScope.launch {
             try {
                 val response = apiService.createParticipante(formularioParticipar)
