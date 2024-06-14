@@ -8,18 +8,24 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "participantes")
+@Table(name = "participantes_dos")
 public class Participante {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="id")
     private int id;
     
+    @Column(name="dni")
     private String dni;
+    
+    @Column(name="nombre")
     private String nombre;
+    
+    @Column(name="numero_Telefono")
     private String numeroTelefono;
 
-    @Column(nullable = false)
+    @Column(name="item_Comprado", nullable = false)
     private String itemComprado;
 
     // Constructor

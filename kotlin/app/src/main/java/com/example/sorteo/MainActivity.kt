@@ -155,7 +155,7 @@ class MainActivity : ComponentActivity() {
                         Button(
                             onClick = {
                                 View.compartido.deleteParticipante(participante.id)
-                                navController.navigate("pantalla_participante")
+                                navController.navigate("pantalla_participantes")
                             },
                             modifier = Modifier.padding(horizontal = 8.dp)
                         ) {
@@ -399,7 +399,7 @@ fun UpdateScreen(navController: NavController, id: String) {
         Button(onClick = {
             try {
                 View.compartido.actualizarParticipante(participanteId, participante)
-                navController.navigate("principal")
+                navController.navigate("main_screen")
             } catch (e: Exception) {
                 Log.e("ErrorRespuesta", "Error al actualizar participante :(", e)
             }

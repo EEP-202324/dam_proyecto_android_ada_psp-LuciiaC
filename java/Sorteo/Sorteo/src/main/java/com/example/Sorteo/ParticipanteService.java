@@ -19,7 +19,7 @@ public class ParticipanteService {
     }
 
     // Método para obtener un participante por ID
-    public Optional<Participante> findById(int id) {
+    public Optional<Participante> findById(Long id) {
         return sorteoRepository.findById(id);
     }
 
@@ -29,7 +29,7 @@ public class ParticipanteService {
     }
 
     // Método para eliminar un participante por ID
-    public void deleteById(int id) {
+    public void deleteById(Long id) {
         sorteoRepository.deleteById(id);
     }
 }
